@@ -1,11 +1,11 @@
-;;; zstd.el --- libzstd binding of Emacs Lisp -*- lexical-binding: t; -*-
+;;; zstd.el --- zstd binding of Emacs Lisp -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017 by Syohei YOSHIDA
+;; Copyright (C) 2020 by Shohei YOSHIDA
 
-;; Author: Syohei YOSHIDA <syohex@gmail.com>
-;; URL: https://github.com/syohex/
+;; Author: Shohei YOSHIDA <syohex@gmail.com>
+;; URL: https://github.com/syohex/emacs-zstd
 ;; Version: 0.01
-;; Package-Requires: ((emacs "25"))
+;; Package-Requires: ((emacs "26.3"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,11 +26,20 @@
 
 (require 'zstd-core)
 
-(defun zstd-compress (str &optional level)
-  (zstd-core-compress str (or level 1)))
+;;;###autoload
+(defun zstd-compress (input &optional level)
+  (unless (stringp input)
+    (user-error "Compress function support only string"))
+  (let ((level (if (not level)
+                   22
+                 (prog1 level
+                   (let ((max-level (zstd-core-max-compression-level)))
+                     (when (> level max-level)
+                       (user-error "Invalid level. 0 <= level <= %d" max-level)))))))
+    (zstd-core-compress input level)))
 
-(defun zstd-decompress (compressed)
-  (zstd-core-decompress compressed))
+(defun zstd-decompress (vec)
+  (zstd-core-decompress vec))
 
 (provide 'zstd)
 

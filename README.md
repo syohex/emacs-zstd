@@ -1,8 +1,13 @@
-# zstd.el
+# emacs-zstd
 
-[libzstd](https://github.com/facebook/zstd) binding of Emacs Lisp
+[zstd](https://github.com/facebook/zstd) binding of Emacs Lisp
 
-## Requirements
-- libzstd
+## Interfaces
 
-Ubuntu/Debian provides libzstd by libzstd and libzstd-dev packages
+### `(zstd-compress string &optional level) -> vector`
+
+Compress string
+
+### `(zstd-decompress vector) -> vector`
+
+Decompress vector which contains bytes
